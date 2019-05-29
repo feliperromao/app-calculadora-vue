@@ -17,7 +17,7 @@
     <Button label="+" operation @onClick="setOperation"/>
     <Button label="0" double @onClick="addDigit"/>
     <Button label="." @onClick="addDigit"/>
-    <Button label="=" operation/>
+    <Button label="=" operation @onClick="setOperation"/>
   </div>
 </template>
 
@@ -44,14 +44,14 @@ export default {
             if(this.current === 0){
                 this.operation = operation
                 this.current = 1
+                this.clearDisplay = true
             }else{
                 const equals = operation === "="
                 const currentOperation = this.operation
 
                 try{
-                    this.value[0] = eval(
-                        `${this.value[0]} ${currentOperation} ${this.value[1]}`
-                    )
+                    const calculatedValue = eval(`${this.value[0]} ${currentOperation} ${this.value[1]}`)
+                    this.value[0] = Number.isInteger(calculatedValue) ? calculatedValue : calculatedValue.toFixed(2)
                 }catch (e){
                     this.$emit('onError', e)
                 }
@@ -64,7 +64,7 @@ export default {
             }
         },
         addDigit(n){
-            if( n ==="." && this.displayValue.includes(".") ){
+            if( n === "." && this.displayValue.includes(".") ){
                 return
             }
 
